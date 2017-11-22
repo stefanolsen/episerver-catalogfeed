@@ -1,0 +1,27 @@
+<FieldMapping xmlns="http://stefanolsen.com/CatalogFeed.GoogleMerchant/MappingDocument.xsd">
+  <ContentType CommerceType="CatalogNode">
+    <Fields>
+      <MappedField MetaField="GoogleProductCategoryId" FeedField="google_product_category"/>
+    </Fields>
+  </ContentType>
+  
+  <ContentType CommerceType="Product">
+    <Fields>
+      <MappedField MetaField="DisplayName" FeedField="title"/>
+      <MappedField MetaField="Description" FeedField="description"/>
+      <MappedField MetaField="Brand" FeedField="brand"/>
+    </Fields>
+    <ImageGroup AssetMetaField=""/>
+  </ContentType>
+
+  <ContentType CommerceType="Variation">
+    <Fields>
+      <MappedField MetaField="Code" FeedField="code"/>
+      <MappedField MetaField="StopPublish" FeedField="expiration_date"/>
+      <MappedField MetaField="Color" FeedField="color"/>
+      <MappedField MetaField="Size" FeedField="size"/>
+
+      <FixedField FeedField="condition" Value="new"/>
+    </Fields>
+  </ContentType>
+</FieldMapping> 

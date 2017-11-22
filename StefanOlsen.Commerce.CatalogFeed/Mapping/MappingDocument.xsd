@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="MappingDocument"
+    targetNamespace="http://stefanolsen.com/CatalogFeed.GoogleMerchant/MappingDocument.xsd"
+    elementFormDefault="qualified"
+    xmlns="http://stefanolsen.com/CatalogFeed.GoogleMerchant/MappingDocument.xsd"
+    xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:simpleType name="simpleType.CommerceEntityType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="CatalogNode"/>
+      <xs:enumeration value="Product"/>
+      <xs:enumeration value="Variation"/>
+    </xs:restriction>
+  </xs:simpleType>
+  <xs:complexType name="complexType.BaseFieldType" abstract="true">
+    <xs:attribute name="FeedField" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="complexType.MappedFieldType">
+    <xs:complexContent>
+      <xs:extension base="complexType.BaseFieldType">
+        <xs:attribute name="MetaField" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="complexType.FixedFieldType">
+    <xs:complexContent>
+      <xs:extension base="complexType.BaseFieldType">
+        <xs:attribute name="Value" type="xs:string" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="complexType.FieldsType">
+    <xs:choice minOccurs="1" maxOccurs="unbounded">
+      <xs:element ref="FixedField"/>
+      <xs:element ref="MappedField"/>
+    </xs:choice>
+  </xs:complexType>
+  <xs:complexType name="complexType.ImageGroup">
+    <xs:attribute name="AssetMetaField" type="xs:string" use="required"/>
+  </xs:complexType>
+  <xs:complexType name="complexType.ContentType">
+    <xs:sequence>
+      <xs:element name="Fields" type="complexType.FieldsType"/>
+      <xs:element name="ImageGroup" type="complexType.ImageGroup" minOccurs="0" maxOccurs="1"/>
+    </xs:sequence>
+    <xs:attribute name="CommerceType" type="simpleType.CommerceEntityType" use="required"/>
+  </xs:complexType>
+  <xs:element name="FixedField" type="complexType.FixedFieldType"/>
+  <xs:element name="MappedField" type="complexType.MappedFieldType"/>
+  <xs:element name="FieldMapping">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="ContentType" type="complexType.ContentType" minOccurs="1" maxOccurs="unbounded"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -1,0 +1,109 @@
+﻿@using System.Web.Mvc
+@using System.Web.Mvc.Html
+@using EPiServer.Framework.Web.Resources
+@model StefanOlsen.Commerce.CatalogFeed.GoogleMerchant.AdminPlugin.ViewModels.AdministrationViewModel
+@{
+    Layout = null;
+}
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    @Html.Raw(ClientResources.RenderResources("ShellCore"))
+    @Html.Raw(ClientResources.RenderResources("ShellCoreLightTheme"))
+    <link href="/EPiServer/CMS/App_Themes/Default/Styles/system.css" type="text/css" rel="stylesheet" />
+    <link href="/EPiServer/CMS/App_Themes/Default/Styles/ToolButton.css" type="text/css" rel="stylesheet" />
+</head>
+<body>
+    <div class="epi-contentContainer epi-padding">
+        <div class="epi-contentArea">
+            <h1 class="EP-prefix">Google Product Feed Configuration</h1>
+            <span class="EP-systemInfo">Configures the Google product feed exporter, for generating an XML feed according to Google Product Feed specifications.</span>
+        </div>
+        <div>
+            <p>
+                The Google product feed exporter need to be set up in order to generate or export any catalogs.<br />
+                Fill in the form below and click save.
+            </p>
+            <p></p>
+        </div>
+        <div class="epi-formArea epi-marginVertical">
+            @using (Html.BeginForm("Index", null, FormMethod.Post))
+            {
+                <div class="epi-size15">
+                    <div>
+                        @Html.LabelFor(m => m.Enabled, "Enable catalog feed export?")
+                        @Html.CheckBoxFor(m => m.Enabled)
+                    </div>
+                    <div>
+                        @Html.LabelFor(m => m.FeedName, "The name of the feed")
+                        @Html.TextBoxFor(m => m.FeedName, new { @class = "episize240" })
+                        @Html.ValidationMessageFor(m => m.FeedName)
+                    </div>
+                    <div>
+                        @Html.LabelFor(m => m.Key, "The secret key of the feed")
+                        @Html.TextBoxFor(m => m.Key, new { @class = "episize240" })
+                        @Html.ValidationMessageFor(m => m.Key)
+                        <button type="button" onclick="generateKey(32, true, true, true)">Generate Key</button>
+                    </div>
+                    <div>
+                        @Html.LabelFor(m => m.FeedExpirationMinutes, "Let each export file expire after (minutes):")
+                        @Html.TextBoxFor(m => m.FeedExpirationMinutes, new { type = "number", @class = "episize240" })
+                        @Html.ValidationMessageFor(m => m.FeedExpirationMinutes)
+                    </div>
+                    <div>
+                        @Html.LabelFor(m => m.MarketIds, "Include these catalogs:")
+                        @Html.ListBoxFor(m => m.CatalogIds, Model.AvailableCatalogs
+                        .Select(catalog => new SelectListItem
+                        {
+                            Value = catalog.CatalogId.ToString(),
+                            Text = catalog.Name
+                        }), new { size = 5, multiple = "multiple", @class = "episize240" })
+                    </div>
+                    <div>
+                        @Html.LabelFor(m => m.MarketIds, "Include these markets:")
+                        @Html.ListBoxFor(m => m.MarketIds, Model.AvailableMarkets
+                        .Select(market => new SelectListItem
+                        {
+                            Value = market.MarketId.Value,
+                            Text = market.MarketName
+                        }), new { size = 5, multiple = "multiple", @class = "episize240" })
+                    </div>
+                    <div>
+                        @Html.LabelFor(m => m.MappingDocument, "Use this custom field mapping for feed generation:")
+                        @Html.TextAreaFor(m => m.MappingDocument, new { @class = "episize240" })
+                        @Html.ValidationMessageFor(m => m.MappingDocument)
+                        <em>This must be a valid XML document.</em>
+                    </div>
+                </div>
+
+                <div class="epi-buttonContainer">
+                    <span class="epi-cmsButton">
+                        <input type="submit" value="Save" class="epi-cmsButton-text epi-cmsButton-tools epi-cmsButton-Save" />
+                    </span>
+                </div>
+            }
+        </div>
+    </div>
+    <script type="text/javascript">
+        var lowerCase = 'abcdefghijklmnopqrstuvwxyz';
+        var upperCase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        var numbers = '1234567890';
+
+        function generateKey(length, useLowerCase = true, useUpperCase = true, useNumbers = true) {
+            var chars = '';
+            var key = '';
+
+            if (useLowerCase) chars += lowerCase;
+            if (useUpperCase) chars += upperCase;
+            if (useNumbers) chars += numbers;
+
+            for (let i = 0; i < length; i++) {
+                key += chars[Math.floor(Math.random() * chars.length)];
+            }
+
+            document.getElementById('@Html.IdFor(m=>m.Key)').value = key;
+        }
+    </script>
+</body>
+</html>
